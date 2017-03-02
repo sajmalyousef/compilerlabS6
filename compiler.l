@@ -5,7 +5,12 @@
 	#include "Symboltable.h"
 	#define VOID -1
 	#include <stdlib.h>
-
+	#define T_INT -1003
+	#define T_BOOL -1004
+	#define TRUE -1006
+	#define FALSE -1007
+	#define INTARR 1001
+	#define BOOLARR 1002
 	struct Gsymbol * GST = NULL;
 %}
 
@@ -28,15 +33,15 @@
 "while" 	{ return WHILE; }
 "do" 		{ return DO; }
 "endwhile" 	{ return ENDWHILE; }
-"true"		{ return 1;}
-"false"		{return 0;}
+"true"		{ yylval = makeLeafNode(TRUE, T_BOOL); return BOOLEAN;}
+"false"		{yylval = makeLeafNode(FALSE, T_BOOL); return BOOLEAN;}
 
 [a-zA-Z_][a-zA-Z_0-9]*	{ 	char * varName = malloc(sizeof(char)*strlen(yytext)+1);
 			strcpy(varName, yytext);
 			yylval = TreeCreate(INT, ID,0, varName,  NULL, NULL, NULL, NULL); 
 			return ID;
 		}
-[0-9]+		{ yylval = makeLeafNode(atoi(yytext), INT); return NUM; }
+[0-9]+		{ yylval = makeLeafNode(atoi(yytext), T_INT); return NUM; }
 [=]		{ return ASGN; }
 "+"		{ return PLUS; }
 "*"		{ return MUL; }

@@ -40,7 +40,8 @@ struct Tnode* makeLeafNode(int n,int TYPE){
 
 struct Tnode* makeOperatorNode(int op, struct Tnode *l, struct Tnode *r,int TYPE)
 {
-    struct Tnode *temp;
+   
+   struct Tnode *temp;
     temp = (struct Tnode*)malloc(sizeof(struct Tnode));
     bzero(temp, sizeof(struct Tnode));
     temp->TYPE = TYPE;
@@ -78,6 +79,7 @@ int evaluate(struct Tnode *t){
 			if(t->Ptr1->Ptr1!=NULL)
 				{
 				  int index=evaluate(t->Ptr1->Ptr1);
+				   //printf("%d",index);
 				  scanf("%d",Glookup(t->Ptr1->NAME)->BINDING+index);
 				}
 			else

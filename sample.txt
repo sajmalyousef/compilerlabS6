@@ -1,16 +1,19 @@
 decl
-        integer i,j;boolean p,q;
+        integer i,j;
 	integer xy;
 	integer a[10];
+	boolean b[10],c;
 enddecl
 
 begin
-        i = 0;
-	read(xy);
-		j=p+q;
-		
-                write(a[i]);
-               	i=i+1;
-     		write(i);
+	b[0]=true;
+       	read(a[0]);
+	write(a[0]);
+	read(i);
+	write(i);
+
+	
+	
+              
 
 end

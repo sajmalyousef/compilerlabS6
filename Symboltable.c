@@ -4,7 +4,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#define T_INT -1003
+#define T_BOOL -1004
+#define TRUE -1006
+#define FALSE -1007
+#define INTARR 1001
+#define BOOLARR 1002
 extern struct Gsymbol * GST;
 
 struct Gsymbol *Glookup(char* NAME)
@@ -44,6 +49,6 @@ void Ginstall(char* NAME, int TYPE, int SIZE)
 	i->NAME = NAME;
 	i->TYPE = TYPE;
 	i->SIZE = SIZE;
-
+	//printf("%d",i->TYPE);
 	i->BINDING = malloc(SIZE);
 }
