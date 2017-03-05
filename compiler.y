@@ -1,4 +1,4 @@
-	
+
 %{
 	#define YYSTYPE struct Tnode*
 	#include "abstree.c"
@@ -49,6 +49,8 @@ idlist: idlist','ID      {   //  printf("%s installed as  variable\n", $3->NAME)
 						Ginstall($3->NAME, INTARR, sizeof(int)*$5->VALUE);
 					else if(v_type==T_BOOL)
 						Ginstall($3->NAME, BOOLARR, sizeof(int)*$5->VALUE);
+					else 
+						printf("Type error in array.\n");
 				} 
 
 	| ID		 {      //printf("%s installed as variable\n", $1->NAME);
@@ -63,6 +65,10 @@ idlist: idlist','ID      {   //  printf("%s installed as  variable\n", $3->NAME)
 						Ginstall($1->NAME, INTARR, sizeof(int)*$3->VALUE);
 				else if(v_type==T_BOOL)
 						Ginstall($1->NAME, BOOLARR, sizeof(int)*$3->VALUE);
+				else
+							{
+								printf("Type error in array\n");
+							}
 			} 
 
 
@@ -82,7 +88,7 @@ slist 	: slist stmt		{ if($1->TYPE !=VOID||$2->TYPE!=VOID)
      	;
 
 
-expr	: expr PLUS expr	{  //printf("%s",$1->TYPE);
+expr	: expr PLUS expr	{  //printf("%d",$1->TYPE);
 			         if($1->TYPE != T_INT || $3->TYPE!=T_INT)
 						{printf("ARITHMETIC ERROR + ");
 						exit(0);} 	
@@ -114,19 +120,32 @@ expr	: expr PLUS expr	{  //printf("%s",$1->TYPE);
 	| ID			{$1->TYPE = Glookup($1->NAME)->TYPE;
 				  $$ = $1;
 				}
-	|ID'['expr']'		{    if(Glookup($1->NAME)->SIZE/sizeof(int)<$3->VALUE)
+	|ID'['expr']'		{   	if(Glookup($1->NAME)->SIZE/sizeof(int)<$3->VALUE)
 					{
-						printf("ARRAY OVERFLOEW");
+						printf("ARRAY OVERFLOW");
 						exit(0);
-					}   
-					//printf("%d",$1->VALUE);
-					if($3->TYPE!=T_INT)
-					{printf("type error :[]");
-					 exit(0);}
+					} 
+					 if($3->TYPE != T_INT)
+        					{
+						printf("type error: []");
+						printf("type error: [expr]");
+						exit(0);
+					}
+					if(Glookup($1->NAME)->TYPE == INTARR)
+					{
+						$$ =$$=TreeCreate(T_INT,ID,0,$1->NAME,NULL,$3,NULL,NULL);
+					}
+					else if(Glookup($1->NAME)->TYPE == BOOLARR)
+					{
+						$$ = $$=TreeCreate(T_BOOL,ID,0,$1->NAME,NULL,$3,NULL,NULL);
+					}
 					
-								
-					$$=TreeCreate(VOID,ID,0,$1->NAME,NULL,$3,NULL,NULL);}
-
+					else
+					{
+						printf("Type error: [] on non array");
+ 						exit(0);
+					}
+				}
 stmt 	: ID ASGN expr ';'	{ //printf("assignment");
 				  if(Glookup($1->NAME)->TYPE != $3->TYPE)
        					{
@@ -135,36 +154,25 @@ stmt 	: ID ASGN expr ';'	{ //printf("assignment");
 					}
       				  $$ = TreeCreate(VOID, ASGN,0, NULL, NULL, $1, $3, NULL);
 				}
-	|ID'['expr']' ASGN expr ';' {	if(Glookup($1->NAME)->TYPE == INTARR  )
-       						{	if($3->TYPE != T_INT || $6->TYPE != T_INT)
-								printf("type error: []=");
-							exit(0);
-						}
-					else if(Glookup($1->NAME)->TYPE == BOOLARR  )
-       						{	printf("%d",$6->TYPE);
-							if($3->TYPE != T_INT || $6->TYPE != T_BOOL)
-								printf("type error: []=");
-							exit(0);
-						}
-					else
-						{
-							printf("type error");
-							exit(0);
-						}
+	|ID'['expr']' ASGN expr ';' {	if(Glookup($1->NAME)->TYPE != INTARR || $3->TYPE != T_INT || $6->TYPE != T_INT)
+						if(Glookup($1->NAME)->TYPE != BOOLARR || $3->TYPE != T_INT || $6->TYPE != T_BOOL)
+        						{
+ 							printf("type error: []=");
+ 							exit(0);}
+					
 					struct Tnode *new_id_node = TreeCreate(-1, ID, -1, $1 -> NAME, NULL, $3, NULL, NULL);
 					$$ = TreeCreate(VOID, ASGN, -1, NULL, NULL, new_id_node, $6, NULL);
 				    }
 				
-	| READ '(' ID ')' ';' 	{ //printf("%d",$3->TYPE); 
-					if($3->TYPE!=T_INT)
-							{printf("READING A BOOLEAN NOT ALLOWED");
-							 exit(0);}
+	| READ '(' ID ')' ';' 	{ if(Glookup($3->NAME)->TYPE== T_BOOL)
+					{printf("cannot read bool");
+					exit(0);}
 				  $$ = TreeCreate(VOID, READ, 0,NULL,  NULL, $3, NULL, NULL);
 				}
 	|READ '(' ID'['expr']'')'';'
-					{	if($3->TYPE!=INTARR)
-							{printf("READING A BOOLEAN NOT ALLOWED");
-							 exit(0);}
+					{if(Glookup($3->NAME)->TYPE== BOOLARR)
+					{printf("cannot read bool array");
+					exit(0);}
 						struct Tnode *new_id_node = TreeCreate(VOID, ID, -1, $3 -> NAME, NULL, $5, NULL, NULL);
 						$$ = TreeCreate(VOID, READ, -1, NULL, NULL, new_id_node, NULL, NULL);
 					}

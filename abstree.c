@@ -79,7 +79,6 @@ int evaluate(struct Tnode *t){
 			if(t->Ptr1->Ptr1!=NULL)
 				{
 				  int index=evaluate(t->Ptr1->Ptr1);
-				   //printf("%d",index);
 				  scanf("%d",Glookup(t->Ptr1->NAME)->BINDING+index);
 				}
 			else

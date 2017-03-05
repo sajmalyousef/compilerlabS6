@@ -1,18 +1,15 @@
 decl
-        integer i,j;
+        integer i,j;boolean p[9],q;
 	integer xy;
 	integer a[10];
-	boolean b[10],c;
 enddecl
 
 begin
-	b[0]=true;
-       	read(a[0]);
-	write(a[0]);
-	read(i);
-	write(i);
-
-	
+	a[1]=9;
+	     
+	a[5]=a[3]+5;
+     
+     write(a[1]);	
 	
               
 
