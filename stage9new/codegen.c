@@ -416,7 +416,7 @@ int codeGen(struct tnode* t){
 			break;
 
 		default:
-			printf("Something unexpected happenned: %d\n", t->NODETYPE);
+			printf("Something unexpected happenned, this node is not found: %d\n", t->NODETYPE);
 			exit(-1);
 	}
 }
