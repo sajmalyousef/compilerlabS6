@@ -25,6 +25,11 @@ struct Gsymbol *Glookup(char* NAME)
 	return NULL;
 }
 
+Gsymbol* getGsymbol()
+{
+	return malloc(sizeof(struct Gsymbol));
+}
+
 void Ginstall(char* NAME, int TYPE, int SIZE)
 {
 	struct Gsymbol *i;
@@ -33,7 +38,7 @@ void Ginstall(char* NAME, int TYPE, int SIZE)
 		exit(0);}
 	if (GST == NULL)
 	{
-		GST = malloc(sizeof(struct Gsymbol));
+		GST = getGsymbol();
 		i = GST;
 	}
 	else
@@ -42,7 +47,7 @@ void Ginstall(char* NAME, int TYPE, int SIZE)
 		while(i->NEXT != NULL)
 			i = i->NEXT;
 
-		i->NEXT = malloc(sizeof(struct Gsymbol));
+		i->NEXT = getGsymbol();
 		i = i->NEXT;
 	}
 
